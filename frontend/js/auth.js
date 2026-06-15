@@ -77,7 +77,7 @@ async function handleLogin(e) {
     setLoading("login-btn", true);
 
     try {
-        const res = await fetch("http://localhost:5000/login", {
+        const res = await fetch("https://spotify-clone-c6b2.onrender.com/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -116,7 +116,7 @@ async function handleRegister(e) {
     setLoading("register-btn", true);
 
     try {
-        const res = await fetch("http://localhost:5000/register", {
+        const res = await fetch("https://spotify-clone-c6b2.onrender.com/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
@@ -135,7 +135,7 @@ async function handleRegister(e) {
         }
 
         // Auto-login after registration
-        const loginRes = await fetch("http://localhost:5000/login", {
+        const loginRes = await fetch("https://spotify-clone-c6b2.onrender.com/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
