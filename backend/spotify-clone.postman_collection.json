@@ -1,0 +1,325 @@
+{
+  "info": {
+    "_postman_id": "spotify-clone-collection-v1",
+    "name": "Spotify Clone API",
+    "description": "Complete Postman collection for the Spotify Clone backend. Set BASE_URL to http://localhost:5000 and TOKEN will be auto-saved after login.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE_URL", "value": "http://localhost:5000" },
+    { "key": "TOKEN", "value": "" },
+    { "key": "songId", "value": "" },
+    { "key": "playlistId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/register", "host": ["{{BASE_URL}}"], "path": ["register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) {",
+                  "  pm.collectionVariables.set('TOKEN', json.token);",
+                  "  console.log('Token saved:', json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/login", "host": ["{{BASE_URL}}"], "path": ["login"] }
+          }
+        },
+        {
+          "name": "Add to Favorites",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/favorites/{{songId}}", "host": ["{{BASE_URL}}"], "path": ["favorites", "{{songId}}"] }
+          }
+        },
+        {
+          "name": "Get Favorites",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/favorites", "host": ["{{BASE_URL}}"], "path": ["favorites"] }
+          }
+        },
+        {
+          "name": "Add to Recently Played",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/recently-played/{{songId}}", "host": ["{{BASE_URL}}"], "path": ["recently-played", "{{songId}}"] }
+          }
+        },
+        {
+          "name": "Get Recently Played",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/recently-played", "host": ["{{BASE_URL}}"], "path": ["recently-played"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Songs",
+      "item": [
+        {
+          "name": "Create Song",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json._id) { pm.collectionVariables.set('songId', json._id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "{{TOKEN}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"God's Plan\",\n  \"artist\": \"Drake\",\n  \"album\": \"Scorpion\",\n  \"duration\": 198\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/songs", "host": ["{{BASE_URL}}"], "path": ["songs"] }
+          }
+        },
+        {
+          "name": "Get All Songs",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BASE_URL}}/songs", "host": ["{{BASE_URL}}"], "path": ["songs"] }
+          }
+        },
+        {
+          "name": "Get All Songs - Paginated",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/songs?page=1&limit=5",
+              "host": ["{{BASE_URL}}"],
+              "path": ["songs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Songs - Filter by Artist",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/songs?artist=Drake",
+              "host": ["{{BASE_URL}}"],
+              "path": ["songs"],
+              "query": [{ "key": "artist", "value": "Drake" }]
+            }
+          }
+        },
+        {
+          "name": "Get Songs - Filter by Album",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/songs?album=Scorpion",
+              "host": ["{{BASE_URL}}"],
+              "path": ["songs"],
+              "query": [{ "key": "album", "value": "Scorpion" }]
+            }
+          }
+        },
+        {
+          "name": "Search Songs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/songs/search?q=God",
+              "host": ["{{BASE_URL}}"],
+              "path": ["songs", "search"],
+              "query": [{ "key": "q", "value": "God" }]
+            }
+          }
+        },
+        {
+          "name": "Get Song By ID (Auto-tracks Recently Played)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/songs/{{songId}}", "host": ["{{BASE_URL}}"], "path": ["songs", "{{songId}}"] }
+          }
+        },
+        {
+          "name": "Update Song",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "{{TOKEN}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"God's Plan (Updated)\",\n  \"duration\": 210\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/songs/{{songId}}", "host": ["{{BASE_URL}}"], "path": ["songs", "{{songId}}"] }
+          }
+        },
+        {
+          "name": "Upload Cover Image",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "cover", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{BASE_URL}}/songs/{{songId}}/upload-cover", "host": ["{{BASE_URL}}"], "path": ["songs", "{{songId}}", "upload-cover"] }
+          }
+        },
+        {
+          "name": "Delete Song",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/songs/{{songId}}", "host": ["{{BASE_URL}}"], "path": ["songs", "{{songId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Playlists",
+      "item": [
+        {
+          "name": "Create Playlist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json._id) { pm.collectionVariables.set('playlistId', json._id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "{{TOKEN}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Chill Playlist\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/playlists", "host": ["{{BASE_URL}}"], "path": ["playlists"] }
+          }
+        },
+        {
+          "name": "Get All Playlists",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BASE_URL}}/playlists", "host": ["{{BASE_URL}}"], "path": ["playlists"] }
+          }
+        },
+        {
+          "name": "Get Playlist By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BASE_URL}}/playlists/{{playlistId}}", "host": ["{{BASE_URL}}"], "path": ["playlists", "{{playlistId}}"] }
+          }
+        },
+        {
+          "name": "Add Song to Playlist",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": {
+              "raw": "{{BASE_URL}}/playlists/{{playlistId}}/add-song/{{songId}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["playlists", "{{playlistId}}", "add-song", "{{songId}}"]
+            }
+          }
+        },
+        {
+          "name": "Remove Song from Playlist",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": {
+              "raw": "{{BASE_URL}}/playlists/{{playlistId}}/remove-song/{{songId}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["playlists", "{{playlistId}}", "remove-song", "{{songId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "{{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/profile", "host": ["{{BASE_URL}}"], "path": ["profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "{{TOKEN}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/profile", "host": ["{{BASE_URL}}"], "path": ["profile"] }
+          }
+        }
+      ]
+    }
+  ]
+}
