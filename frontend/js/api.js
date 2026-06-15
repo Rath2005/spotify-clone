@@ -2,7 +2,7 @@
 //  API Helper - Centralized HTTP client
 // ==========================================
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://spotify-clone-c6b2.onrender.com";
 
 function getToken() {
     return localStorage.getItem("spotify_token");
